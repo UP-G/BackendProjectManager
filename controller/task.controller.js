@@ -20,17 +20,17 @@ class TaskController {
     }
     async getTask (req, res) { // Взятие всех тасков дотсупных пользователю
         const {userId} = req.body
-        const allTask = await client.task.findMany({where: {
+        const tasks = await client.task.findMany({where: {
             responsible_id: userId
         },
         orderBy: {
             parent_id: 'asc'
         }
     },);
-        //console.log(allTasks)
+        console.log(tasks)
         //const treeTask = hierarchy(allTask);
 
-        res.json(allTask)
+        res.json({tasks: tasks})
     }
 
     async getSubtask (req, res) { // взятие одного таска

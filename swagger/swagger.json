@@ -1,0 +1,55 @@
+{
+    "openapi":"3.0.2",
+    "info": {
+      "title":"API Title",
+      "version":"0"
+    },
+    "servers": [
+      {"url":"http://localhost:5763/apiV0"}
+    ],
+    "tags": [{"name": "task"}],
+    "paths": {
+        "/task": {
+            "post": {
+                "summary": "Метод получения задач",
+                "operationId": "getTask",
+                "requestBody": {
+                    "description": "",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/task"
+                            }
+                        }
+                    }
+                },
+                "tags": ["task"],
+                "responses": {
+                    "200": {
+                        "description": "Возращает все таски у которых User ответсвенный"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "task": {
+                "type": "object",
+                "required": ["title", "creator_id", "responsible_id", "date_of_creation"],
+                "properties": {
+                    "title": { "type": "string", "example": "Заголовок задачи"},
+                    "creator_id": { "type": "integer", "example": "5"},
+                    "responsible_id": { "type": "integer", "example": "3"},
+                    "date_of_creation": {"type": "string", "format": "date-time"}
+                }
+            },
+            "tasks" : {
+                "type": "array",
+                "items": {
+                    "$ref": "#/components/schemas/task"
+                }
+            }
+        }
+    }
+  }
