@@ -27,10 +27,8 @@ class TaskController {
             parent_id: 'asc'
         }
     },);
-        console.log(tasks)
-        //const treeTask = hierarchy(allTask);
 
-        res.json({tasks: tasks})
+        res.json(tasks)
     }
 
     async getSubtask (req, res) { // взятие одного таска
