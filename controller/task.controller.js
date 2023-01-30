@@ -14,9 +14,8 @@ class TaskController {
                 date_of_creation: dateOfCreation
             }
         })
-            
-        res.json(task)
 
+        res.json(task)
     }
     async getTask (req, res) { // Взятие всех тасков дотсупных пользователю
         const {userId} = req.body

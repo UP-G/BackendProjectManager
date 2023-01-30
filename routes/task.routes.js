@@ -10,9 +10,11 @@ router.post('/task/', [
     check('responsibleId').isNumeric().not().isString(),
     check('dateOfCreation').isISO8601().toDate(),
 ], errorMsg, TaskController.createTask)
+
 router.post('/getTask/', [
     check('userId').isNumeric().not().isEmpty(),
 ], errorMsg, TaskController.getTask)
+
 router.post('/getSubtask/', TaskController.getSubtask)
 router.put('/task/', TaskController.updateTask)
 router.delete('/task/:id', TaskController.deleteTask)
