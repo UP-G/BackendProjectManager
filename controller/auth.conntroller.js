@@ -22,9 +22,10 @@ class AuthController {
                 last_name: lastName,
                 email: email,
                 password: hashPassword,
-                date_of_creation: dateOfCreation
+                date_of_creation: new Date(dateOfCreation)
             }
         })
+
         res.json({message: "Пользователь создан"}, user)
     }
 
@@ -38,7 +39,7 @@ class AuthController {
             })
 
             if (!Object.keys(user).length) {
-                return res.status(404).json({message: "Пользователь не найден"})
+                return res.status(400).json({message: "Пользователь не найден"})
             }
             const isPassValid = bcrypt.compareSync(password, user[0].password)
 
@@ -48,10 +49,10 @@ class AuthController {
 
             const token = jwt.sign({id: user[0].user_id}, SECRET_KEY, {expiresIn: "1h"})
             return res.json({token, user})
-        } catch (e) {
-            res.send({message: "Server error"}, e)
-        }
 
+        } catch (e) {
+            res.status(400).send({message: "Server error"}, e)
+        }
     }
 
     async auth (req, res) {

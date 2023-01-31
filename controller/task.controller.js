@@ -1,5 +1,5 @@
 const client = require('../clientDb')
-const {validationResult} = require('express-validator');
+//const {validationResult} = require('express-validator');
 
 class TaskController {
     async createTask (req, res) {
@@ -17,17 +17,17 @@ class TaskController {
 
         res.json(task)
     }
-    async getTask (req, res) { // Взятие всех тасков дотсупных пользователю
-        const {userId} = req.body
+    async getTask (req, res) {// Взятие всех тасков дотсупных пользователю
+        const userId = req.params.id
+
         const tasks = await client.task.findMany({where: {
-            responsible_id: userId
+            responsible_id: Number(userId)
         },
         orderBy: {
             parent_id: 'asc'
         }
-    },);
-
-        res.json(tasks)
+    });
+        res.json({tasks})
     }
 
     async getSubtask (req, res) { // взятие одного таска
@@ -40,55 +40,28 @@ class TaskController {
     }
 
     async updateTask (req, res) {
-        const {taskId, field, updateValues} = req.body
-        switch (field) {
-            case 'title':
-                const updateTitleTask = await client.task.update({
-                    where: {
-                        task_id: taskId
-                    },
-                    data: {
-                        title: updateValues
-                    }
-                })
-                break;
-            case 'description':
-                const updateDescriptionTask = await client.task.update({
-                    where: {
-                        task_id: taskId
-                    },
-                    data: {
-                        description: updateValues
-                    }
-                })
-                break;
-            case 'responsible_id':
-                const updateResponsibleTask = await client.task.update({
-                    where: {
-                        task_id: taskId
-                    },
-                    data: {
-                        responsible_id: updateValues
-                    }
-                })
-                break;
+        const {task} = req.body
 
-            default:
-                break;
-        }
+        const updateTask = await client.task.update({where: {
+                    task_id: task[0].task_id
+                },
+            data: {
+                ...task[0]
+            }
+        })
 
-        res.json(taskId, field, updateValues)
+        res.json(updateTask)
     }
 
     async deleteTask (req, res) {
         const taskId = req.params.id
-        const deleteTask = client.task.delete({
-            where: {
+        const deleteTask = await client.task.delete({where: {
                 task_id: {
                     taskId
                 }
             }
         })
+        res.json(deleteTask)
     }
 }
 

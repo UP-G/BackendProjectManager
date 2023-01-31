@@ -8,15 +8,17 @@ datasource db {
 }
 
 model task {
-  task_id                        Int      @id @default(autoincrement())
-  title                          String   @db.VarChar(164)
-  description                    String?  @db.VarChar(256)
+  task_id                        Int       @id @default(autoincrement())
+  title                          String    @db.VarChar(164)
+  description                    String?   @db.VarChar(256)
   creator_id                     Int
   responsible_id                 Int?
-  date_of_creation               DateTime @db.DateTime(0)
+  date_of_creation               DateTime? @db.DateTime(0)
+  date_of_completion             DateTime? @db.DateTime(0)
   parent_id                      Int?
-  user                           user     @relation(fields: [creator_id], references: [user_id], onDelete: Cascade, onUpdate: Restrict, map: "task_ibfk_1")
-  user_task_responsible_idTouser user?    @relation("task_responsible_idTouser", fields: [responsible_id], references: [user_id], onUpdate: NoAction, map: "fk_responsibleId_To_userId")
+  status_task_id                 Int?
+  user                           user      @relation(fields: [creator_id], references: [user_id], onDelete: Cascade, onUpdate: Restrict, map: "task_ibfk_1")
+  user_task_responsible_idTouser user?     @relation("task_responsible_idTouser", fields: [responsible_id], references: [user_id], onUpdate: NoAction, map: "fk_responsibleId_To_userId")
 
   @@index([creator_id], map: "fk_creatorId_To_userId_idx")
   @@index([creator_id, responsible_id], map: "fk_creatorId_userId_idx")
@@ -24,20 +26,30 @@ model task {
 }
 
 model user {
-  user_id                        Int     @id @default(autoincrement())
-  name                           String  @db.VarChar(64)
-  date_of_creation               String  @db.VarChar(256)
-  last_name                      String? @db.VarChar(64)
-  password                       String  @db.VarChar(256)
-  email                          String  @unique(map: "email_UNIQUE") @db.VarChar(64)
-  avatar                         String? @db.VarChar(124)
+  user_id                        Int      @id @default(autoincrement())
+  name                           String   @db.VarChar(64)
+  date_of_creation               DateTime @db.DateTime(0)
+  last_name                      String?  @db.VarChar(64)
+  password                       String   @db.VarChar(256)
+  email                          String   @unique(map: "email_UNIQUE") @db.VarChar(64)
+  avatar                         String?  @db.VarChar(124)
   rate_id                        Int?
   task                           task[]
-  task_task_responsible_idTouser task[]  @relation("task_responsible_idTouser")
+  task_task_responsible_idTouser task[]   @relation("task_responsible_idTouser")
 }
 
-model rate {
-  rate_id Int    @id @default(autoincrement())
-  name    String @db.VarChar(64)
-  price   Int
+model status_task {
+  status_task_id Int    @id
+  name_status    String @db.VarChar(124)
+}
+
+model tarif {
+  tarif_id Int    @id @default(autoincrement())
+  name     String @db.VarChar(64)
+  price    Int
+}
+
+model user_role {
+  role_id   Int     @id @default(autoincrement())
+  name_role String? @db.VarChar(64)
 }

@@ -6,16 +6,14 @@ const {errorMsg} = require('../scripts/checkReqError');
 
 router.post('/task/', [
     check('title').trim().not().isEmpty(),
-    check('creatorId').isNumeric().not().isEmpty().not().isString(),
-    check('responsibleId').isNumeric().not().isString(),
+    check('creatorId', 'Только число').isNumeric().not().isEmpty().not().isString(),
+    check('responsibleId', 'Только число').isNumeric().not().isString(),
     check('dateOfCreation').isISO8601().toDate(),
 ], errorMsg, TaskController.createTask)
 
-router.post('/getTask/', [
-    check('userId').isNumeric().not().isEmpty(),
-], errorMsg, TaskController.getTask)
+router.get('/task/:id', TaskController.getTask)
 
-router.post('/getSubtask/', TaskController.getSubtask)
+router.get('/subtask/:id', TaskController.getSubtask)
 router.put('/task/', TaskController.updateTask)
 router.delete('/task/:id', TaskController.deleteTask)
 
