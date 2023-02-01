@@ -27,7 +27,7 @@ class TaskController {
             parent_id: 'asc'
         }
     });
-        res.json({tasks})
+        res.json(tasks)
     }
 
     async getSubtask (req, res) { // взятие одного подтаска
