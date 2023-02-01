@@ -32,6 +32,7 @@ class AuthController {
     async login(req, res) {
         try {
             const {email, password} = req.body
+
             const user = await client.user.findMany({
                 where: {
                     email: email
@@ -39,16 +40,20 @@ class AuthController {
             })
 
             if (!Object.keys(user).length) {
-                return res.status(400).json({message: "Пользователь не найден"})
+                return res.status(400).json({message: "Неверный email или пароль"})
             }
+
             const isPassValid = bcrypt.compareSync(password, user[0].password)
 
             if (!isPassValid) {
-                return res.status(400).json({message: "Неверный пароль"})
+                return res.status(400).json({message: "Неверный email или пароль"})
             }
 
             const token = jwt.sign({id: user[0].user_id}, SECRET_KEY, {expiresIn: "1h"})
-            return res.json({token, user})
+
+            user[0].token = token
+
+            return res.json(user)
 
         } catch (e) {
             res.status(400).send({message: "Server error"}, e)

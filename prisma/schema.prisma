@@ -33,7 +33,7 @@ model user {
   password                       String   @db.VarChar(256)
   email                          String   @unique(map: "email_UNIQUE") @db.VarChar(64)
   avatar                         String?  @db.VarChar(124)
-  rate_id                        Int?
+  tarif_id                       Int?
   task                           task[]
   task_task_responsible_idTouser task[]   @relation("task_responsible_idTouser")
 }

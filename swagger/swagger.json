@@ -11,8 +11,8 @@
     "paths": {
         "/task": {
             "post": {
-                "summary": "Метод получения задач",
-                "operationId": "getTask",
+                "summary": "Создания задачи",
+                "operationId": "postTask",
                 "requestBody": {
                     "description": "",
                     "content": {
@@ -26,7 +26,22 @@
                 "tags": ["task"],
                 "responses": {
                     "200": {
-                        "description": "Возращает все таски у которых User ответсвенный"
+                        "description": "Создания задачи OK"
+                    }
+                }
+            }
+        },
+        "/task/{:id}": {
+            "get": {
+                "summary": "Получение задачи",
+                "description": "Получение задачи по её ID",
+                "operationId": "getTask",
+                "tags": [
+                    "task"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Получение задачи ОК"
                     }
                 }
             }
@@ -39,9 +54,24 @@
                 "required": ["title", "creator_id", "responsible_id", "date_of_creation"],
                 "properties": {
                     "title": { "type": "string", "example": "Заголовок задачи"},
+                    "description": { "type": "string",
+                        "example": "Описание"
+                    },
                     "creator_id": { "type": "integer", "example": "5"},
                     "responsible_id": { "type": "integer", "example": "3"},
-                    "date_of_creation": {"type": "string", "format": "date-time"}
+                    "date_of_creation": {"type": "string", "format": "date-time"},
+                    "date_of_completion": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "parent_id": {
+                        "type": "integer",
+                        "example": "1"
+                    },
+                    "status_task_id": {
+                        "type": "integer",
+                        "example": "1"
+                    }
                 }
             }
         }
