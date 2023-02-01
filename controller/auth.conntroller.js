@@ -53,7 +53,7 @@ class AuthController {
 
             user[0].token = token
 
-            return res.json(user)
+            return res.json(...user)
 
         } catch (e) {
             res.status(400).send({message: "Server error"}, e)
