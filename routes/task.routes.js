@@ -5,10 +5,10 @@ const {check} = require('express-validator');
 const {errorMsg} = require('../scripts/checkReqError');
 
 router.post('/task/', [
-    check('title').trim().not().isEmpty(),
-    check('creatorId', 'Только число').isNumeric().not().isEmpty().not().isString(),
-    check('responsibleId', 'Только число').isNumeric().not().isString(),
-    check('dateOfCreation').isISO8601().toDate(),
+    // check('title').trim().not().isEmpty(),
+    // check('creatorId', 'Только число').isNumeric().not().isEmpty(),
+    // check('responsibleId', 'Только число').isNumeric(),
+    // check('dateOfCreation').isISO8601().toDate(),
 ], errorMsg, TaskController.createTask)
 
 router.get('/task/:id', TaskController.getTask)

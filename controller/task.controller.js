@@ -3,19 +3,15 @@ const client = require('../clientDb')
 
 class TaskController {
     async createTask (req, res) {
-        const {title, description, creatorId, responsibleId, dateOfCreation} = req.body
-
-        const task = await client.task.create({
+        const {task} = req.body
+        console.log(task)
+        const createTask = await client.task.create({
             data: {
-                title: title,
-                description: description,
-                creator_id: creatorId,
-                responsible_id: responsibleId,
-                date_of_creation: dateOfCreation
+                ...task[0]
             }
         })
 
-        res.json(task)
+        res.json(createTask)
     }
     async getTask (req, res) {// Взятие всех тасков дотсупных пользователю
         const userId = req.params.id
