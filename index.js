@@ -11,7 +11,7 @@ const PORT = process.env.PORT;
 app.use(corsMiddleware);
 app.use(express.json());
 app.use('/apiV0/', Task);
-app.use('/apiV0/auth', Auth);
+app.use('/apiV0/', Auth);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 const start = async () => {
