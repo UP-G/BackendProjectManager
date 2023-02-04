@@ -26,16 +26,17 @@ model task {
 }
 
 model user {
-  user_id                        Int      @id @default(autoincrement())
-  name                           String   @db.VarChar(64)
-  date_of_creation               DateTime @db.DateTime(0)
-  last_name                      String?  @db.VarChar(64)
-  password                       String   @db.VarChar(256)
-  email                          String   @unique(map: "email_UNIQUE") @db.VarChar(64)
-  avatar                         String?  @db.VarChar(124)
+  user_id                        Int            @id @default(autoincrement())
+  name                           String         @db.VarChar(64)
+  date_of_creation               DateTime       @db.DateTime(0)
+  last_name                      String?        @db.VarChar(64)
+  password                       String         @db.VarChar(256)
+  email                          String         @unique(map: "email_UNIQUE") @db.VarChar(64)
+  avatar                         String?        @db.VarChar(124)
   tarif_id                       Int?
   task                           task[]
-  task_task_responsible_idTouser task[]   @relation("task_responsible_idTouser")
+  task_task_responsible_idTouser task[]         @relation("task_responsible_idTouser")
+  user_to_team                   user_to_team[]
 }
 
 model status_task {
@@ -52,4 +53,22 @@ model tarif {
 model user_role {
   role_id   Int     @id @default(autoincrement())
   name_role String? @db.VarChar(64)
+}
+
+model team {
+  team_id      Int            @id @default(autoincrement())
+  name_team    String?        @db.VarChar(124)
+  user_to_team user_to_team[]
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model user_to_team {
+  user_to_team_id Int  @id @default(autoincrement())
+  team_id         Int
+  user_id         Int
+  team            team @relation(fields: [team_id], references: [team_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_team_team_id")
+  user            user @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_user_id")
+
+  @@index([team_id], map: "fk_team_team_id_idx")
+  @@index([user_id], map: "fk_user_user_id_idx")
 }
