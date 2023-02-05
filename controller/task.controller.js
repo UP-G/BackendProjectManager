@@ -45,11 +45,12 @@ class TaskController {
 
     async getSubtask (req, res) { // взятие одного подтаска
         try {
-            const {parentId} = req.body
+            const parentId = req.params.id
+
             const getSubtask = await client.task.findMany({where: {
-                    parent_id: parentId
-                }
-            })
+                parent_id: Number(parentId)
+                }})
+
             res.json(getSubtask)
         } catch (e) {
             res.status(400).json(e)
