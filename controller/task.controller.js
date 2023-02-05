@@ -15,7 +15,7 @@ class TaskController {
             res.json(createTask)
         }
         catch (e) {
-            console.log(e)
+            res.status(400).json(e)
         }
     }
     async getTask (req, res) {// Взятие всех тасков дотсупных пользователю
@@ -23,26 +23,38 @@ class TaskController {
             const userId = req.params.id
 
             const tasks = await client.task.findMany({where: {
-                    responsible_id: Number(userId)
+                    OR: [
+                        {
+                            creator_id: Number(userId)
+                        },
+                        {
+                            responsible_id: Number(userId)
+                        }
+                    ],
                 },
                 orderBy: {
                     parent_id: 'asc'
                 }
-            });
+            })
             res.json(tasks)
         } catch (e) {
-            console.log(e)
+            res.status(400).json(e)
         }
 
     }
 
     async getSubtask (req, res) { // взятие одного подтаска
-        const {parentId} = req.body
-        const getSubtask = await client.task.findMany({where: {
-            parent_id: parentId
-        }})
+        try {
+            const {parentId} = req.body
+            const getSubtask = await client.task.findMany({where: {
+                    parent_id: parentId
+                }
+            })
+            res.json(getSubtask)
+        } catch (e) {
+            res.status(400).json(e)
+        }
 
-        res.json(getSubtask)
     }
 
     async updateTask (req, res) {
@@ -56,23 +68,25 @@ class TaskController {
                     ...task
                 }
             })
-
             res.json(updateTask)
         } catch (e) {
-            console.log(e)
+            res.status(400).json(e)
         }
 
     }
 
     async deleteTask (req, res) {
-        const taskId = req.params.id
-        const deleteTask = await client.task.delete({where: {
-                task_id: {
-                    taskId
+        try {
+            const taskId = req.params.id
+            const deleteTask = await client.task.delete({where: {
+                    task_id: taskId
                 }
-            }
-        })
-        res.json(deleteTask)
+            })
+            res.json(deleteTask)
+        } catch (e) {
+            res.status(400).json(e)
+        }
+
     }
 }
 
