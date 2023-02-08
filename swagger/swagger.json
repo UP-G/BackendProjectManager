@@ -7,7 +7,14 @@
     "servers": [
       {"url":"http://localhost:5763/apiV0"}
     ],
-    "tags": [{"name": "task"}],
+    "tags": [{
+        "name": "task",
+        "description": "Работа с задачами"
+        },
+        {
+            "name": "auth",
+            "description": "Работа с авторизацией"
+        }],
     "paths": {
         "/task": {
             "post": {
@@ -47,6 +54,7 @@
             }
         }
     },
+
     "components": {
         "schemas": {
             "task": {
@@ -71,6 +79,34 @@
                     "status_task_id": {
                         "type": "integer",
                         "example": "1"
+                    }
+                }
+            },
+            "user": {
+                "type": "object",
+                "required": ["name", "last_name", "email", "password", "date_of_creation"],
+                "properties": {
+                    "name": { "type": "string",
+                        "example": "Герта"
+                    },
+                    "last_name": { "type": "string",
+                        "example": "Чурилова"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "testmail@yandex.ru"
+                    },
+                    "avatar": {
+                        "type": "string",
+                        "example": "___"
+                    },
+                    "password": {
+                        "type": "string",
+                        "example": "TestPassword"
+                    },
+                    "date_of_creation": {
+                        "type": "string",
+                        "example": "2023-02-08T17:24:08.918Z"
                     }
                 }
             }

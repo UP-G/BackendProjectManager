@@ -1,6 +1,6 @@
 const client = require('../clientDb')
 
-class TeamConntroller {
+class TeamController {
     async getUserOnTeam (req, res) {
         try {
             const teamId = req.params.id
@@ -10,15 +10,14 @@ class TeamConntroller {
                         team_id: Number(teamId)
                     }
                 }
-                }
-            })
+            }})
             console.log(users)
             res.json(users)
         } catch (e) {
-            console.log(e)
+            res.status(400).json(e)
         }
 
     }
 }
 
-module.exports = new TeamConntroller
+module.exports = new TeamController
