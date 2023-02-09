@@ -2,9 +2,8 @@ require('dotenv').config()
 const express = require('express');
 const User = require('./routes/user.routes');
 const Task = require('./routes/task.routes');
-//const Auth = require('./routes/auth.routes');
+const cors = require('cors')
 const Team = require('./routes/team.routes')
-const corsMiddleware = require('./middleware/cross.middleware');
 const cookieParser = require('cookie-parser')
 const app = express();
 const swaggerUi = require('swagger-ui-express');
@@ -13,7 +12,10 @@ const PORT = process.env.PORT;
 
 app.use(express.json());
 app.use(cookieParser());
-app.use(corsMiddleware);
+app.use(cors({
+    credentials: true,
+    origin: "http://localhost:8080"
+}));
 app.use('/apiV0/', User);
 //app.use('/apiV0/', Auth);
 app.use('/apiV0/', Team);
