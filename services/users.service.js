@@ -15,6 +15,7 @@ class UsersService {
         }
 
         user.password = await bcrypt.hash(user.password, 4)
+        user.date_of_creation = new Date()
 
         const createUser = await client.user.create({
             data: {
