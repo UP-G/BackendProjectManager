@@ -36,6 +36,7 @@ model user {
   tarif_id                       Int?
   task                           task[]
   task_task_responsible_idTouser task[]         @relation("task_responsible_idTouser")
+  team                           team[]
   token                          token[]
   user_to_team                   user_to_team[]
 }
@@ -58,8 +59,13 @@ model user_role {
 
 model team {
   team_id      Int            @id @default(autoincrement())
-  name_team    String?        @db.VarChar(124)
+  title        String         @db.VarChar(124)
+  creator_id   Int
+  type_id      Int?
+  user         user           @relation(fields: [creator_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_creator_id_user_id")
   user_to_team user_to_team[]
+
+  @@index([creator_id], map: "fk_creator_id_user_id_idx")
 }
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
@@ -77,8 +83,13 @@ model user_to_team {
 model token {
   token_id      Int    @id @default(autoincrement())
   user_id       Int
-  refresh_token String @db.VarChar(512)
+  refresh_token String @unique(map: "refresh_token_UNIQUE") @db.VarChar(512)
   user          user   @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_token_user_user_id")
 
   @@index([user_id], map: "fk_token_user_user_id_idx")
+}
+
+model type_team {
+  type_team_id Int    @id
+  name_type    String @db.VarChar(45)
 }

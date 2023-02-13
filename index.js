@@ -17,7 +17,6 @@ app.use(cors({
     origin: "http://localhost:8080"
 }));
 app.use('/apiV0/', User);
-//app.use('/apiV0/', Auth);
 app.use('/apiV0/', Team);
 app.use('/apiV0/', Task);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

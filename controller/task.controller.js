@@ -5,7 +5,6 @@ class TaskController {
     async createTask (req, res) {
         try {
             const {task} = req.body
-            console.log(task)
             const createTask = await client.task.create({
                 data: {
                     ...task
