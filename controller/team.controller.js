@@ -22,6 +22,17 @@ class TeamController {
         }
     }
 
+    async addUserInTeam (req, res, next) {
+        try {
+            const {dataUser} = req.body
+            const addUser = await TeamServices.addUserInTeam(dataUser)
+            res.json(addUser)
+        } catch (e) {
+            next(e)
+        }
+
+    }
+
 }
 
 module.exports = new TeamController

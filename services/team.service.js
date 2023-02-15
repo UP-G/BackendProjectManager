@@ -1,5 +1,6 @@
 const client = require("../clientDb");
 const ApiError = require("../scripts/exceptions/api.error");
+const _ = require('lodash/core');
 
 class TeamService {
     async getUserOnTeam(teamId) {
@@ -42,6 +43,38 @@ class TeamService {
         })
 
         return {...newTeam}
+    }
+
+    async addUserInTeam(dataUser) {
+
+        if (_.isEmpty(dataUser)) {
+            throw ApiError.BadRequest(`Пустой список`)
+        }
+
+         const userIds = await client.user.findMany({
+            where: {
+                email: {in: dataUser.email}
+            },
+            select: {
+                user_id: true
+            }
+        })
+
+        //TODO переделать.
+
+        const team_id = Array(userIds.length).fill(dataUser.team_id, 0, userIds.length)
+
+        for (let i in userIds) {
+            userIds[i]['team_id'] = team_id[i]
+        }
+
+        const addUser = await client.user_to_team.createMany({
+            data: [
+                ...userIds
+            ]
+        })
+
+        return {...addUser}
     }
 
 }

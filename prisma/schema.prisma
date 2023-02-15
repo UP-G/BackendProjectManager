@@ -20,6 +20,7 @@ model task {
   user                           user      @relation(fields: [creator_id], references: [user_id], onDelete: Cascade, onUpdate: Restrict, map: "task_ibfk_1")
   user_task_responsible_idTouser user?     @relation("task_responsible_idTouser", fields: [responsible_id], references: [user_id], onUpdate: NoAction, map: "fk_responsibleId_To_userId")
 
+  @@unique([task_id, parent_id], map: "duplicate_task_parent_id")
   @@index([creator_id], map: "fk_creatorId_To_userId_idx")
   @@index([creator_id, responsible_id], map: "fk_creatorId_userId_idx")
   @@index([responsible_id], map: "fk_responsibleId_To_userId_idx")
@@ -76,6 +77,7 @@ model user_to_team {
   team            team @relation(fields: [team_id], references: [team_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_team_team_id")
   user            user @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_user_id")
 
+  @@unique([team_id, user_id], map: "duplicate_user_to_team")
   @@index([team_id], map: "fk_team_team_id_idx")
   @@index([user_id], map: "fk_user_user_id_idx")
 }
