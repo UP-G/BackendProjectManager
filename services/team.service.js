@@ -13,7 +13,7 @@ class TeamService {
                     }
                 }
             })
-            return {users}
+            return {...users}
     }
 
     async createTeam(team) {
