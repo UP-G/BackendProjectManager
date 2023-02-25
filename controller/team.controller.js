@@ -1,10 +1,10 @@
 const TeamServices = require("../services/team.service")
+
 class TeamController {
     async getUserOnTeam (req, res, next) {
         try {
             const teamId = req.params.id
             const users = await TeamServices.getUserOnTeam(teamId)
-            console.log(users)
             res.json(users)
         } catch (e) {
             next(e)

@@ -11,15 +11,24 @@ class TeamService {
                             team_id: Number(teamId)
                         }
                     }
+                },
+                select: {
+                    user_id: true,
+                    name: true,
+                    last_name: true,
+                    email: true,
+                    avatar: true,
+                    tarif_id: true
                 }
             })
+
             return {...users}
     }
 
     async createTeam(team) {
         team.creator_id = Number(team.creator_id)
 
-        const nameTeam = await client.team.findMany({
+        const nameTeam = await client.team.findFirst({
             where: {
                 AND: [
                     {
@@ -32,9 +41,11 @@ class TeamService {
             }
         })
 
-        if (nameTeam) {
+        if (!_.isEmpty(nameTeam)) {
             throw ApiError.BadRequest(`Команду с таким названием ${team.title} вы уже создали`)
         }
+
+        team.date_of_creation = new Date()
 
         const newTeam = await client.team.create({
             data: {
@@ -59,11 +70,8 @@ class TeamService {
                 user_id: true
             }
         })
-
         //TODO переделать.
-
         const team_id = Array(userIds.length).fill(dataUser.team_id, 0, userIds.length)
-
         for (let i in userIds) {
             userIds[i]['team_id'] = team_id[i]
         }

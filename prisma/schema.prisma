@@ -8,19 +8,20 @@ datasource db {
 }
 
 model task {
-  task_id                        Int       @id @default(autoincrement())
-  title                          String    @db.VarChar(164)
-  description                    String?   @db.VarChar(256)
+  task_id                        Int            @id @default(autoincrement())
+  title                          String         @db.VarChar(164)
+  description                    String?        @db.VarChar(256)
   creator_id                     Int
   responsible_id                 Int?
-  date_of_creation               DateTime? @db.DateTime(0)
-  date_of_completion             DateTime? @db.DateTime(0)
+  date_of_creation               DateTime?      @db.DateTime(0)
+  date_of_completion             DateTime?      @db.DateTime(0)
   parent_id                      Int?
   status_task_id                 Int?
-  user                           user      @relation(fields: [creator_id], references: [user_id], onDelete: Cascade, onUpdate: Restrict, map: "task_ibfk_1")
-  user_task_responsible_idTouser user?     @relation("task_responsible_idTouser", fields: [responsible_id], references: [user_id], onUpdate: NoAction, map: "fk_responsibleId_To_userId")
+  user                           user           @relation(fields: [creator_id], references: [user_id], onDelete: Cascade, onUpdate: Restrict, map: "task_ibfk_1")
+  user_task_responsible_idTouser user?          @relation("task_responsible_idTouser", fields: [responsible_id], references: [user_id], onUpdate: NoAction, map: "fk_responsibleId_To_userId")
+  task_to_plan                   task_to_plan[]
 
-  @@unique([task_id, parent_id], map: "duplicate_task_parent_id")
+  @@unique([parent_id, status_task_id], map: "duplicate_task_parent_id")
   @@index([creator_id], map: "fk_creatorId_To_userId_idx")
   @@index([creator_id, responsible_id], map: "fk_creatorId_userId_idx")
   @@index([responsible_id], map: "fk_responsibleId_To_userId_idx")
@@ -35,6 +36,7 @@ model user {
   email                          String         @unique(map: "email_UNIQUE") @db.VarChar(64)
   avatar                         String?        @db.VarChar(124)
   tarif_id                       Int?
+  plan                           plan[]
   task                           task[]
   task_task_responsible_idTouser task[]         @relation("task_responsible_idTouser")
   team                           team[]
@@ -59,12 +61,13 @@ model user_role {
 }
 
 model team {
-  team_id      Int            @id @default(autoincrement())
-  title        String         @db.VarChar(124)
-  creator_id   Int
-  type_id      Int?
-  user         user           @relation(fields: [creator_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_creator_id_user_id")
-  user_to_team user_to_team[]
+  team_id          Int            @id @default(autoincrement())
+  title            String         @db.VarChar(124)
+  date_of_creation DateTime?      @db.DateTime(0)
+  creator_id       Int
+  type_id          Int?
+  user             user           @relation(fields: [creator_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_creator_id_user_id")
+  user_to_team     user_to_team[]
 
   @@index([creator_id], map: "fk_creator_id_user_id_idx")
 }
@@ -94,4 +97,27 @@ model token {
 model type_team {
   type_team_id Int    @id
   name_type    String @db.VarChar(45)
+}
+
+model plan {
+  plan_id          Int            @id @default(autoincrement())
+  title            String         @db.VarChar(256)
+  description      String         @db.VarChar(256)
+  date_of_creation DateTime       @db.DateTime(0)
+  creator_id       Int
+  user             user           @relation(fields: [creator_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_creatorId_plan")
+  task_to_plan     task_to_plan[]
+
+  @@index([creator_id], map: "fk_creatorId_plan_idx")
+}
+
+model task_to_plan {
+  id      Int  @id @default(autoincrement())
+  task_id Int
+  plan_id Int
+  plan    plan @relation(fields: [plan_id], references: [plan_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_plan_task_to_plan")
+  task    task @relation(fields: [task_id], references: [task_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_task_task_to_plan")
+
+  @@index([plan_id], map: "fk_plan_task_to_plan_idx")
+  @@index([task_id], map: "fk_task_task_to_plan_idx")
 }
