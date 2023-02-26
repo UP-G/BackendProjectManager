@@ -39,7 +39,7 @@ app.use('/apiV0/', Plan);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 io.on('connection', (socket) => {
-    console.log('a user connected');
+    console.log('a user connected ' + socket.id);
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });

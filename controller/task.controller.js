@@ -10,7 +10,7 @@ class TaskController {
                     ...task
                 }
             })
-            req.io.sockets.emit('SETTASK', createTask)
+            req.io.sockets.emit('SOCKET_SETTASK', createTask)
             res.json(createTask)
         }
         catch (e) {
