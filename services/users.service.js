@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const ApiError = require('../scripts/exceptions/api.error')
 const TokenService = require('../services/token.service')
 const UserDto = require('../dtos/user.dto')
+const FileService = require('../services/file.service')
+
 class UsersService {
     async registration (user) {
 
@@ -26,6 +28,8 @@ class UsersService {
         const userDto = new UserDto(createUser);
         const tokens = TokenService.generateTokens({...userDto});
         await TokenService.saveToken(userDto.user_id, tokens.refreshToken);
+
+        await FileService.createDir(userDto.user_id);
 
         return {...tokens, user: userDto}
 
