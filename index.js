@@ -26,7 +26,6 @@ app.use(cors({
     origin: "http://localhost:8080"
 }));
 app.use(express.json());
-app.use('/static', express.static('uploads'))
 app.use(function(req,res,next){
     req.io = io;
     next();
