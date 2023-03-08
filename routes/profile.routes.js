@@ -2,8 +2,6 @@ const Router = require('express')
 const router = new Router()
 const ProfileController = require('../controller/profile.controller')
 const authMiddleware = require('../middleware/auth.middleware')
-const fs = require('fs')
-const client = require("../clientDb");
 
 router.post('/photo/', authMiddleware, ProfileController.uploadPhoto)
 

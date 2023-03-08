@@ -25,8 +25,43 @@ class TeamService {
             return {...users}
     }
 
+    async getTeam(userId) {
+        const checkUser = await client.user.findFirst({
+            where: {
+                user_id: Number(userId)
+            },
+            select: {
+                user_id: true
+            }
+        })
+
+        if (_.isEmpty(checkUser)) {
+            throw ApiError.BadRequest(`500`)
+        }
+
+        const team = await client.team.findMany({
+            where: {
+                OR: [
+                    {
+                        user_to_team: {
+                            some: {
+                                user_id: userId
+                            }
+                        }
+                    },
+                    {
+                        creator_id: userId
+                    }
+                ]
+            }
+        })
+
+        return team
+    }
+
+
+
     async createTeam(team) {
-        team.creator_id = Number(team.creator_id)
 
         const nameTeam = await client.team.findFirst({
             where: {
