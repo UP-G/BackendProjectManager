@@ -10,13 +10,30 @@ class TaskController {
                     ...task
                 }
             })
-            req.io.sockets.emit('SOCKET_SETTASK', createTask)
+            req.io.sockets.emit('SET_TASK', createTask)
             res.json(createTask)
         }
         catch (e) {
             res.status(400).json(e)
         }
     }
+
+    async getOneTask (req, res) {
+        try {
+            const taskId = req.params.id
+
+            const task = await client.task.findFirst({
+                where: {
+                    task_id: Number(taskId)
+                }
+            })
+
+            res.json(task)
+        } catch (e) {
+            res.status(400).json(e)
+        }
+    }
+
     async getTask (req, res) {// Взятие всех тасков дотсупных пользователю
         try {
             const userId = req.params.id
