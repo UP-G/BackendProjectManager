@@ -15,8 +15,6 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 
-const swaggerUi = require('swagger-ui-express');
-const swaggerDocument = require('./swagger/swagger.json');
 const PORT = process.env.PORT;
 
 app.use(fileUpload({}))
@@ -27,7 +25,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(function(req,res,next){
-    req.io = io;
+    res.io = io;
     next();
 });
 app.use('/apiV0/', User);
@@ -35,7 +33,6 @@ app.use('/apiV0/', Profile);
 app.use('/apiV0/', Team);
 app.use('/apiV0/', Task);
 app.use('/apiV0/', Plan);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 io.on('connection', (socket) => {
     console.log('a user connected ' + socket.id);
