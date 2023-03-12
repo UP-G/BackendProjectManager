@@ -9,7 +9,7 @@ router.post('/task/', [
     // check('creatorId', 'Только число').isNumeric().not().isEmpty(),
     // check('responsibleId', 'Только число').isNumeric(),
     // check('dateOfCreation').isISO8601().toDate(),
-], TaskController.createTask)
+], authMiddleware, TaskController.createTask)
 
 router.get('/task/:id', authMiddleware, TaskController.getTask)
 router.get('/oneTask/:id', authMiddleware, TaskController.getOneTask)

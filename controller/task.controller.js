@@ -1,20 +1,18 @@
 const client = require('../clientDb')
+const TaskService = require('../services/task.service')
 //const {validationResult} = require('express-validator');
 
 class TaskController {
-    async createTask (req, res) {
+    async createTask (req, res, next) {
         try {
             const {task} = req.body
-            const createTask = await client.task.create({
-                data: {
-                    ...task
-                }
-            })
-            req.io.sockets.emit('SET_TASK', createTask)
-            res.json(createTask)
+            const newTask = await TaskService.createTask(task)
+            newTask.creator_title = req.user.name + ' ' + req.user.last_name
+            res.io.emit('SET_TASK', {task: {...newTask}})
+            res.json(newTask)
         }
         catch (e) {
-            res.status(400).json(e)
+            next(e)
         }
     }
 
