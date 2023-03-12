@@ -8,18 +8,18 @@ datasource db {
 }
 
 model task {
-  task_id                        Int            @id @default(autoincrement())
-  title                          String         @db.VarChar(164)
-  description                    String?        @db.VarChar(256)
-  creator_id                     Int
-  responsible_id                 Int?
-  date_of_creation               DateTime?      @db.DateTime(0)
-  date_of_completion             DateTime?      @db.DateTime(0)
-  parent_id                      Int?
-  status_task_id                 Int?
-  user                           user           @relation(fields: [creator_id], references: [user_id], onDelete: Cascade, onUpdate: Restrict, map: "task_ibfk_1")
-  user_task_responsible_idTouser user?          @relation("task_responsible_idTouser", fields: [responsible_id], references: [user_id], onUpdate: NoAction, map: "fk_responsibleId_To_userId")
-  task_to_plan                   task_to_plan[]
+  task_id            Int            @id @default(autoincrement())
+  title              String         @db.VarChar(164)
+  description        String?        @db.VarChar(256)
+  creator_id         Int
+  responsible_id     Int?
+  date_of_creation   DateTime?      @db.DateTime(0)
+  date_of_completion DateTime?      @db.DateTime(0)
+  parent_id          Int?
+  status_task_id     Int?
+  creator_title      user           @relation(fields: [creator_id], references: [user_id], onDelete: Cascade, onUpdate: Restrict, map: "task_ibfk_1")
+  responsible_title  user?          @relation("task_responsible_idTouser", fields: [responsible_id], references: [user_id], onUpdate: NoAction, map: "fk_responsibleId_To_userId")
+  task_to_plan       task_to_plan[]
 
   @@unique([parent_id, status_task_id], map: "duplicate_task_parent_id")
   @@index([creator_id], map: "fk_creatorId_To_userId_idx")

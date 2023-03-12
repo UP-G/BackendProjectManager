@@ -7,7 +7,7 @@ class TaskController {
         try {
             const {task} = req.body
             const newTask = await TaskService.createTask(task)
-            newTask.creator_title = req.user.name + ' ' + req.user.last_name
+
             res.io.emit('SET_TASK', {task: {...newTask}})
             res.json(newTask)
         }
@@ -32,27 +32,16 @@ class TaskController {
         }
     }
 
-    async getTask (req, res) {// Взятие всех тасков дотсупных пользователю
+    async getTask (req, res, next) {// Взятие всех тасков дотсупных пользователю
         try {
             const userId = req.params.id
 
-            const tasks = await client.task.findMany({where: {
-                    OR: [
-                        {
-                            creator_id: Number(userId)
-                        },
-                        {
-                            responsible_id: Number(userId)
-                        }
-                    ],
-                },
-                orderBy: {
-                    parent_id: 'asc'
-                }
-            })
+            const tasks = await TaskService.getTask(userId)
+
+
             res.json(tasks)
         } catch (e) {
-            res.status(400).json(e)
+            next(e)
         }
 
     }
