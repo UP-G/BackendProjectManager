@@ -105,15 +105,13 @@ class TeamService {
                 user_id: true
             }
         })
-        //TODO переделать.
-        const team_id = Array(userIds.length).fill(dataUser.team_id, 0, userIds.length)
-        for (let i in userIds) {
-            userIds[i]['team_id'] = team_id[i]
-        }
+
+        const team_id = dataUser.team_id;
+        const updatedUserIds = userIds.map(user => ({ ...user, team_id }));
 
         const addUser = await client.user_to_team.createMany({
             data: [
-                ...userIds
+                ...updatedUserIds
             ]
         })
 

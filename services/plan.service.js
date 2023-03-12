@@ -53,14 +53,12 @@ class PlanService {
         }
 
         //TODO переделать.
-        const plan_id = Array(checkIdTask.length).fill(dataTask.plan_id, 0, checkIdTask.length)
-        for (let i in checkIdTask) {
-            checkIdTask[i]['plan_id'] = plan_id[i]
-        }
+        const plan_id = dataTask.plan_id
+        const updatedCheckIdTask = checkIdTask.map(task => ({...task, plan_id}))
 
         const addTask = await client.task_to_plan.createMany({
             data: [
-                ...checkIdTask
+                ...updatedCheckIdTask
             ]
         })
 
