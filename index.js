@@ -49,7 +49,7 @@ io.on('connection', async (socket) => {
             team_id: true
         }}).then(teamIds => {
         teamIds.forEach((value => {
-            socket.join(value)
+            socket.join('team' + value.team_id)
         }))
     });
     console.log(socket.rooms)

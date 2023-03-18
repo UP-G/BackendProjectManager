@@ -52,7 +52,6 @@ class PlanService {
             throw ApiError.BadRequest(`Неверный список`)
         }
 
-        //TODO переделать.
         const plan_id = dataTask.plan_id
         const updatedCheckIdTask = checkIdTask.map(task => ({...task, plan_id}))
 

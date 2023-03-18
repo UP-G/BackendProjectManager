@@ -1,6 +1,7 @@
 const client = require("../clientDb");
 const ApiError = require("../scripts/exceptions/api.error");
 const _ = require('lodash/core');
+const userDto = require("../dtos/user.dto");
 
 class TeamService {
     async getUserOnTeam(teamId) {
@@ -11,16 +12,17 @@ class TeamService {
                             team_id: Number(teamId)
                         }
                     }
-                },
-                select: {
-                    user_id: true,
-                    name: true,
-                    last_name: true,
-                    email: true,
-                    avatar: true,
-                    tarif_id: true
                 }
             })
+
+
+        if (Array.isArray(users)) {
+            this.users = users.map((one) => {
+                return new userDto(one);
+            });
+        } else {
+            this.users = [];
+        }
 
             return {...users}
     }
@@ -58,8 +60,6 @@ class TeamService {
 
         return team
     }
-
-
 
     async createTeam(team) {
 
@@ -117,7 +117,6 @@ class TeamService {
 
         return {...addUser}
     }
-
 }
 
 module.exports = new TeamService
