@@ -8,8 +8,7 @@ const Profile = require('./routes/profile.routes')
 const Plan = require('./routes/plan.routes');
 const cookieParser = require('cookie-parser')
 const fileUpload = require("express-fileupload")
-
-const client = require('./clientDb')
+const PromiseClient = require('./scripts/promiseClient/getTeamIds')
 
 const app = express();
 const http = require('http');
@@ -40,18 +39,14 @@ io.on('connection', async (socket) => {
     const userId = Number(socket.handshake.query.user_id)
 
     console.log('a userId connected: ' + userId);
-//TODO Вынести в отдельную функцию
-    await client.user_to_team.findMany({
-        where: {
-            user_id: userId
-        },
-        select: {
-            team_id: true
-        }}).then(teamIds => {
-        teamIds.forEach((value => {
-            socket.join('team' + value.team_id)
-        }))
-    });
+
+    await PromiseClient.getTeamsId(userId)
+        .then(teamIds => {
+            teamIds.forEach(value => {
+                socket.join('teamId' + value.team_id)
+            })
+        })
+
     console.log(socket.rooms)
     socket.on('disconnect', () => {
         console.log('user disconnected');
