@@ -68,6 +68,50 @@ class TaskService {
         return task
     }
 
+    async getOneTask(taskId) {
+
+        const task = await client.task.findFirst({
+            where: {
+                task_id: Number(taskId)
+            }
+        })
+
+        return task
+    }
+
+    async getSubtask(taskId) {
+
+        const subtask = await client.task.findMany({where: {
+                parent_id: Number(taskId)
+            },
+            include: {
+                creator_title: {
+                    select: {
+                        name: true,
+                        last_name: true
+                    }
+                }, //creator
+                responsible_title: {
+                    select: {
+                        name: true,
+                        last_name: true
+                    },
+                } //Responsible
+            },
+            orderBy: {
+                parent_id: 'asc'
+            }
+        })
+
+        subtask.map((item) => {
+            item['creator_title'] = item['creator_title'].name + ' ' + item['creator_title'].last_name;
+            item['responsible_title'] = item['responsible_title'].name + ' ' + item['responsible_title'].last_name;
+            return item;
+        });
+
+        return subtask
+    }
+
 }
 
 module.exports = new TaskService

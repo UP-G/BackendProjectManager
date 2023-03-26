@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "nodemon index.js",
-    "swagger-autogen": "node swagger.js"
+    "PRD": "pm2 start index.js ./ChatCard/index.js"
   },
   "dependencies": {
     "@prisma/client": "^4.9.0",

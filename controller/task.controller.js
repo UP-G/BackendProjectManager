@@ -8,7 +8,7 @@ class TaskController {
             const {task} = req.body
             const newTask = await TaskService.createTask(task)
 
-            res.io.emit('SET_TASK', {task: {...newTask}})
+            res.io.to(newTask).emit('SET_TASK', {task: {...newTask}})
             res.json(newTask)
         }
         catch (e) {
@@ -16,19 +16,15 @@ class TaskController {
         }
     }
 
-    async getOneTask (req, res) {
+    async getOneTask (req, res, next) {
         try {
             const taskId = req.params.id
 
-            const task = await client.task.findFirst({
-                where: {
-                    task_id: Number(taskId)
-                }
-            })
+            const task = await TaskService.getOneTask(taskId)
 
             res.json(task)
         } catch (e) {
-            res.status(400).json(e)
+            next(e)
         }
     }
 
@@ -38,7 +34,6 @@ class TaskController {
 
             const tasks = await TaskService.getTask(userId)
 
-
             res.json(tasks)
         } catch (e) {
             next(e)
@@ -46,22 +41,20 @@ class TaskController {
 
     }
 
-    async getSubtask (req, res) { // взятие одного подтаска
+    async getSubtask (req, res, next) { // взятие одного подтаска
         try {
             const parentId = req.params.id
 
-            const getSubtask = await client.task.findMany({where: {
-                parent_id: Number(parentId)
-                }})
+            const subtask = await TaskService.getSubtask(parentId)
 
-            res.json(getSubtask)
+            res.json(subtask)
         } catch (e) {
-            res.status(400).json(e)
+            next(e)
         }
 
     }
 
-    async updateTask (req, res) {
+    async updateTask (req, res, next) {
         try {
             const {task} = req.body
 
@@ -74,12 +67,12 @@ class TaskController {
             })
             res.json(updateTask)
         } catch (e) {
-            res.status(400).json(e)
+            next(e)
         }
 
     }
 
-    async deleteTask (req, res) {
+    async deleteTask (req, res, next) {
         try {
             const taskId = req.params.id
             const deleteTask = await client.task.delete({where: {
@@ -88,7 +81,7 @@ class TaskController {
             })
             res.json(deleteTask)
         } catch (e) {
-            res.status(400).json(e)
+            next(e)
         }
 
     }
