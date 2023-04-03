@@ -6,6 +6,7 @@ const cors = require('cors')
 const Team = require('./routes/team.routes')
 const Profile = require('./routes/profile.routes')
 const Plan = require('./routes/plan.routes');
+const Message = require('./routes/message.routes')
 const cookieParser = require('cookie-parser')
 const fileUpload = require("express-fileupload")
 const PromiseClient = require('./scripts/promiseClient/getTeamIds')
@@ -34,6 +35,7 @@ app.use('/apiV0/', Profile);
 app.use('/apiV0/', Team);
 app.use('/apiV0/', Task);
 app.use('/apiV0/', Plan);
+app.use('/apiV0/', Message);
 
 io.on('connection', async (socket) => {
     const userId = Number(socket.handshake.query.user_id)

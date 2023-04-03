@@ -1,5 +1,6 @@
 const client = require('../clientDb')
 const TaskService = require('../services/task.service')
+const RoomService = require("../services/room.service");
 //const {validationResult} = require('express-validator');
 
 class TaskController {
@@ -7,6 +8,7 @@ class TaskController {
         try {
             const {task} = req.body
             const newTask = await TaskService.createTask(task)
+            const newRoom = await RoomService.createRoom('taskId', newTask.task_id, newTask.creator_id)
 
             res.io.to(newTask).emit('SET_TASK', {task: {...newTask}})
             res.json(newTask)
