@@ -10,7 +10,12 @@ class TaskController {
             const newTask = await TaskService.createTask(task)
             const newRoom = await RoomService.createRoom('taskId', newTask.task_id, newTask.creator_id)
 
-            res.io.to(newTask).emit('SET_TASK', {task: {...newTask}})
+            if (newTask.team_owned_id != null) {
+                res.io.to('teamId' + newTask.team_owned_id).emit('SET_TASK', {task: {...newTask}})
+            } else {
+                res.io.to('userId' + newTask.creator_id).emit('SET_TASK', {task: {...newTask}})
+            }
+
             res.json(newTask)
         }
         catch (e) {
@@ -30,7 +35,7 @@ class TaskController {
         }
     }
 
-    async getTask (req, res, next) {// Взятие всех тасков дотсупных пользователю
+    async getTask (req, res, next) {
         try {
             const userId = req.params.id
 
@@ -43,7 +48,7 @@ class TaskController {
 
     }
 
-    async getSubtask (req, res, next) { // взятие одного подтаска
+    async getSubtask (req, res, next) {
         try {
             const parentId = req.params.id
 
@@ -60,13 +65,14 @@ class TaskController {
         try {
             const {task} = req.body
 
-            const updateTask = await client.task.update({where: {
-                    task_id: task.task_id
-                },
-                data: {
-                    ...task
-                }
-            })
+            if (task.team_owned_id != null) {
+                res.io.to('teamId' + task.team_owned_id).emit('SET_TASK', {task: {...task}})
+            } else {
+                res.io.to('userId' + task.creator_id).emit('SET_TASK', {task: {...task}})
+            }
+
+            const updateTask = await TaskService.updateTask(task)
+
             res.json(updateTask)
         } catch (e) {
             next(e)

@@ -17,6 +17,8 @@ model task {
   date_of_completion DateTime?      @db.DateTime(0)
   parent_id          Int?
   status_task_id     Int?
+  team_owned_id      Int?
+  team               team?          @relation(fields: [team_owned_id], references: [team_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_TeamOwnedId_To_teamId")
   creator_title      user           @relation(fields: [creator_id], references: [user_id], onDelete: Cascade, onUpdate: Restrict, map: "task_ibfk_1")
   responsible_title  user?          @relation("task_responsible_idTouser", fields: [responsible_id], references: [user_id], onUpdate: NoAction, map: "fk_responsibleId_To_userId")
   task_to_plan       task_to_plan[]
@@ -25,6 +27,7 @@ model task {
   @@index([creator_id], map: "fk_creatorId_To_userId_idx")
   @@index([creator_id, responsible_id], map: "fk_creatorId_userId_idx")
   @@index([responsible_id], map: "fk_responsibleId_To_userId_idx")
+  @@index([team_owned_id], map: "fk_TeamOwnedId_To_teamId_idx")
 }
 
 model user {
@@ -68,6 +71,7 @@ model team {
   date_of_creation DateTime?      @db.DateTime(0)
   creator_id       Int
   type_id          Int?
+  task             task[]
   user             user           @relation(fields: [creator_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_creator_id_user_id")
   user_to_team     user_to_team[]
 

@@ -1,4 +1,5 @@
 const TeamServices = require("../services/team.service")
+const RoomService = require("../services/room.service");
 
 class TeamController {
     async getUserOnTeam (req, res, next) {
@@ -27,6 +28,7 @@ class TeamController {
             const {team} = req.body
             team.creator_id = req.user.user_id
             const newTeam = await TeamServices.createTeam(team)
+            const newRoom = await RoomService.createRoom('teamId', newTeam.team_id, newTeam.creator_id)
             res.json(newTeam)
         } catch (e) {
             next(e)

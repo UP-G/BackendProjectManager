@@ -5,26 +5,21 @@ const userDto = require("../dtos/user.dto");
 
 class TeamService {
     async getUserOnTeam(teamId) {
-            const users = await client.user.findMany({
-                where: {
-                    user_to_team: {
-                        some: {
-                            team_id: Number(teamId)
-                        }
+        const users = await client.user.findMany({
+            where: {
+                user_to_team: {
+                    some: {
+                        team_id: Number(teamId)
                     }
                 }
-            })
+            }
+        })
 
+        const listUser = users.map((one) => {
+            return new userDto(one);
+        });
 
-        if (Array.isArray(users)) {
-            this.users = users.map((one) => {
-                return new userDto(one);
-            });
-        } else {
-            this.users = [];
-        }
-
-            return {...users}
+        return {...listUser}
     }
 
     async getTeam(userId) {
@@ -97,7 +92,7 @@ class TeamService {
             throw ApiError.BadRequest(`Пустой список`)
         }
 
-         const userIds = await client.user.findMany({
+        const userIds = await client.user.findMany({
             where: {
                 email: {in: dataUser.email}
             },
@@ -107,7 +102,7 @@ class TeamService {
         })
 
         const team_id = dataUser.team_id;
-        const updatedUserIds = userIds.map(user => ({ ...user, team_id }));
+        const updatedUserIds = userIds.map(user => ({...user, team_id}));
 
         const addUser = await client.user_to_team.createMany({
             data: [

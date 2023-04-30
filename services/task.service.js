@@ -29,6 +29,19 @@ class TaskService {
         return {...newTask}
     }
 
+    async updateTask (task) {
+
+        const updateTask = await client.task.update({where: {
+                task_id: task.task_id
+            },
+            data: {
+                ...task
+            }
+        })
+
+        return {...updateTask}
+    }
+
     async getTask (userId) {
         const task = await client.task.findMany({where: {
                 OR: [

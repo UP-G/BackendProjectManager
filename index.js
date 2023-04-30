@@ -41,6 +41,7 @@ io.on('connection', async (socket) => {
     const userId = Number(socket.handshake.query.user_id)
 
     console.log('a userId connected: ' + userId);
+    socket.join('userId' + userId)
 
     await PromiseClient.getTeamsId(userId)
         .then(teamIds => {
