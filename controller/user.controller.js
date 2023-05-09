@@ -40,6 +40,16 @@ class UserController {
         }
     }
 
+    async addGitLabToken(req, res, next) {
+        try {
+            const {tokenGitLab} = req.body;
+            const addTokenGitLab = await UserService.addGitLabToken(tokenGitLab, req.user.user_id);
+            return res.json({'status': 'OK'})
+        } catch (e) {
+            next(e);
+        }
+    }
+
     async refresh(req, res, next) {
         try {
             const {refreshToken} = req.cookies;

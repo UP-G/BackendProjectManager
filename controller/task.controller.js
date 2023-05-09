@@ -9,11 +9,12 @@ class TaskController {
             const {task} = req.body
             const newTask = await TaskService.createTask(task)
             const newRoom = await RoomService.createRoom('taskId', newTask.task_id, newTask.creator_id)
+            res.io.to('userId' + newTask.responsible_id).emit('notificationDefault', {event: 'SET_TASK', data: newTask})
 
             if (newTask.team_owned_id != null) {
                 res.io.to('teamId' + newTask.team_owned_id).emit('SET_TASK', {task: {...newTask}})
             } else {
-                res.io.to('userId' + newTask.creator_id).emit('SET_TASK', {task: {...newTask}})
+                res.io.to('userId' + newTask.responsible_id).emit('SET_TASK', {task: {...newTask}})
             }
 
             res.json(newTask)
@@ -65,13 +66,14 @@ class TaskController {
         try {
             const {task} = req.body
 
-            if (task.team_owned_id != null) {
-                res.io.to('teamId' + task.team_owned_id).emit('SET_TASK', {task: {...task}})
-            } else {
-                res.io.to('userId' + task.creator_id).emit('SET_TASK', {task: {...task}})
-            }
-
             const updateTask = await TaskService.updateTask(task)
+
+            res.io.to('userId' + updateTask.responsible_id).emit('notificationDefault', {event: 'SET_TASK', data: updateTask})
+            if (task.team_owned_id != null) {
+                res.io.to('teamId' + updateTask.team_owned_id).emit('SET_TASK', {task: {...updateTask}})
+            } else {
+                res.io.to('userId' + updateTask.responsible_id).emit('SET_TASK', {task: {...updateTask}})
+            }
 
             res.json(updateTask)
         } catch (e) {
@@ -84,7 +86,7 @@ class TaskController {
         try {
             const taskId = req.params.id
             const deleteTask = await client.task.delete({where: {
-                    task_id: taskId
+                    task_id: Number(taskId)
                 }
             })
             res.json(deleteTask)

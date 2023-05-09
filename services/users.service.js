@@ -60,6 +60,19 @@ class UsersService {
         return await TokenService.removeToken(refreshToken);
     }
 
+    async addGitLabToken(tokenGitLab, userId) {
+        const newToken = await client.user.update({
+            where: {
+                user_id: userId
+            },
+            data: {
+                token_git_lab: tokenGitLab
+            }
+        })
+
+        return newToken
+    }
+
     async refresh(refreshToken) {
         if (!refreshToken) {
             throw ApiError.UnauthorizedError();

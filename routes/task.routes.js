@@ -13,8 +13,8 @@ router.post('/task/', [
 
 router.get('/task/:id', authMiddleware, TaskController.getTask)
 router.get('/oneTask/:id', authMiddleware, TaskController.getOneTask)
-router.get('/subtask/:id', TaskController.getSubtask)
-router.put('/task/', TaskController.updateTask)
-router.delete('/task/:id', TaskController.deleteTask)
+router.get('/subtask/:id', authMiddleware, TaskController.getSubtask)
+router.put('/task/', authMiddleware, TaskController.updateTask)
+router.delete('/task/:id', authMiddleware, TaskController.deleteTask)
 
 module.exports = router

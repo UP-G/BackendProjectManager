@@ -22,8 +22,7 @@ const PORT = process.env.PORT;
 app.use(fileUpload({}))
 app.use(cookieParser());
 app.use(cors({
-    credentials: true,
-    origin: "http://localhost:8080"
+    origin: true
 }));
 app.use(express.json());
 app.use(function(req,res,next){
@@ -57,14 +56,14 @@ io.on('connection', async (socket) => {
 });
 
 const start = async () => {
-  try {
-    //prisma.$connect()
-    server.listen(PORT, () => {
-      console.log('Server started on port ', PORT);
-    });
-  } catch (e) {
-    console.log(e);
-  }
+    try {
+        //prisma.$connect()
+        server.listen(PORT, () => {
+            console.log('Server started on port ', PORT);
+        });
+    } catch (e) {
+        console.log(e);
+    }
 };
 
 start();

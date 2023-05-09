@@ -2,6 +2,7 @@ const Router = require('express')
 const router = new Router()
 const {body} = require('express-validator');
 const UserController = require('../controller/user.controller')
+const authMiddleware = require("../middleware/auth.middleware");
 
 router.post('/registration',
     // body('name').isLength({min: 2, max: 64}),
@@ -11,6 +12,7 @@ router.post('/registration',
     UserController.registration)
 router.post('/login', UserController.login)
 router.post('/logout', UserController.logout)
+router.post('/addTokenGitLab', authMiddleware, UserController.addGitLabToken)
 router.get('/refresh', UserController.refresh)
 
 module.exports = router

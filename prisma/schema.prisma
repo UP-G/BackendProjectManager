@@ -38,6 +38,7 @@ model user {
   password                       String         @db.VarChar(256)
   email                          String         @unique(map: "email_UNIQUE") @db.VarChar(64)
   avatar                         String?        @db.VarChar(124)
+  token_git_lab                  String?        @db.VarChar(255)
   tarif_id                       Int?
   chat_room                      chat_room[]
   message                        message[]

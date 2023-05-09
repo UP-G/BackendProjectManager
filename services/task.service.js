@@ -86,8 +86,25 @@ class TaskService {
         const task = await client.task.findFirst({
             where: {
                 task_id: Number(taskId)
-            }
+            },
+            include: {
+                creator_title: {
+                    select: {
+                        name: true,
+                        last_name: true
+                    }
+                }, //creator
+                responsible_title: {
+                    select: {
+                        name: true,
+                        last_name: true
+                    },
+                } //Responsible
+            },
         })
+
+        task.creator_title = task.creator_title.name + ' ' + task.creator_title.last_name
+        task.responsible_title = task.responsible_title.name + ' ' + task.responsible_title.last_name
 
         return task
     }
