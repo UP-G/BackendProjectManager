@@ -18,11 +18,14 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 
 const PORT = process.env.PORT;
+const ORIGIN = process.env.ORIGIN;
+const CREDENTIALS = process.env.CREDENTIALS;
 
 app.use(fileUpload({}))
 app.use(cookieParser());
 app.use(cors({
-    origin: true
+    origin: ORIGIN,
+    credentials: (CREDENTIALS === "true"),
 }));
 app.use(express.json());
 app.use(function(req,res,next){

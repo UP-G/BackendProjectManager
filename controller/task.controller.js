@@ -8,13 +8,14 @@ class TaskController {
         try {
             const {task} = req.body
             const newTask = await TaskService.createTask(task)
-            const newRoom = await RoomService.createRoom('taskId', newTask.task_id, newTask.creator_id)
-            res.io.to('userId' + newTask.responsible_id).emit('notificationDefault', {event: 'SET_TASK', data: newTask})
+            await RoomService.createRoom('taskId', newTask.task_id, newTask.creator_id)
 
             if (newTask.team_owned_id != null) {
                 res.io.to('teamId' + newTask.team_owned_id).emit('SET_TASK', {task: {...newTask}})
-            } else {
+                res.io.to('teamId' + newTask.team_owned_id).emit('notificationDefault', {event: 'SET_TASK', data: newTask}) //TODO absclass
+            } else if (newTask.responsible_id != null) {
                 res.io.to('userId' + newTask.responsible_id).emit('SET_TASK', {task: {...newTask}})
+                res.io.to('userId' + newTask.responsible_id).emit('notificationDefault', {event: 'SET_TASK', data: newTask})
             }
 
             res.json(newTask)
@@ -68,11 +69,12 @@ class TaskController {
 
             const updateTask = await TaskService.updateTask(task)
 
-            res.io.to('userId' + updateTask.responsible_id).emit('notificationDefault', {event: 'SET_TASK', data: updateTask})
-            if (task.team_owned_id != null) {
+            if (updateTask.team_owned_id != null) {
                 res.io.to('teamId' + updateTask.team_owned_id).emit('SET_TASK', {task: {...updateTask}})
-            } else {
+                res.io.to('teamId' + updateTask.team_owned_id).emit('notificationDefault', {event: 'SET_TASK', data: updateTask})
+            } else if (updateTask.responsible_id != null) {
                 res.io.to('userId' + updateTask.responsible_id).emit('SET_TASK', {task: {...updateTask}})
+                res.io.to('userId' + updateTask.responsible_id).emit('notificationDefault', {event: 'SET_TASK', data: updateTask})
             }
 
             res.json(updateTask)
