@@ -68,7 +68,7 @@ class TaskService {
                 } //Responsible
             },
             orderBy: {
-                parent_id: 'asc'
+                task_id: 'asc'
             }
         })
 
@@ -129,7 +129,7 @@ class TaskService {
                 } //Responsible
             },
             orderBy: {
-                parent_id: 'asc'
+                task_id: 'asc'
             }
         })
 
