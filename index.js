@@ -24,7 +24,7 @@ const CREDENTIALS = process.env.CREDENTIALS;
 app.use(fileUpload({}))
 app.use(cookieParser());
 app.use(cors({
-    origin: ORIGIN,
+    origin: (ORIGIN === "true") ? true : ORIGIN,
     credentials: (CREDENTIALS === "true"),
 }));
 app.use(express.json());
